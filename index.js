@@ -7,7 +7,8 @@ required: true
 },
 age: Number,
 gender: String,
-salary: Number
+salary: Number,
+city: String
 });
 const Person = mongoose.model(
 'modelname',
@@ -19,7 +20,8 @@ const doc1 = new Person({
 name: 'NHQ',
 age: 32,
 gender: 'Male',
-salary: 1234
+salary: 1234 ,
+city: 'London'
 });
 const savedDoc = await doc1.save();
 console.log('One document inserted');
@@ -37,6 +39,7 @@ async function main() {
  await countDocuments();
  await deleteManyPersons();
  await updateManyPersons();
+ await findByCity();
  } catch (err) {
  console.error('Error:', err);
  } finally {
@@ -46,10 +49,10 @@ async function main() {
  console.log("One document started");
 async function insertMany() {
  const manypersons = [
- { name: 'SimonNHQ', age: 42, gender: 'Male', salary: 3456 },
- { name: 'NeeshaNN', age: 53, gender: 'Female', salary: 1000 },
- { name: 'MaryNHQ', age: 27, gender: 'Female', salary: 5402 },
- { name: 'MikeNJQ', age: 40, gender: 'Male', salary: 4519 }
+ { name: 'SimonNHQ', age: 42, gender: 'Male', salary: 3456, city: 'London' },
+ { name: 'NeeshaNN', age: 53, gender: 'Female', salary: 1000, city: 'Liverpool' },
+ { name: 'MaryNHQ', age: 27, gender: 'Female', salary: 5402, city: 'Birmingham'},
+ { name: 'MikeNJQ', age: 40, gender: 'Male', salary: 4519, city: 'Leeds'}
  ];
  const result = await Person.insertMany(manypersons);
  console.log('Many documents inserted');
@@ -57,8 +60,8 @@ async function insertMany() {
         }
  async function findAll() {
 const docs = await Person.find({})
-.sort({ salary: 1 }) // sort by salary ascending
-.select('name salary age')
+.sort({ salary: 1 }) 
+.select('name salary age city')
 .limit(100);
 console.log("Showing multiple documents");
 docs.forEach(doc => {
@@ -96,6 +99,15 @@ async function updateManyPersons() {
  );
  console.log("Update successful");
  console.log(result);
+}
+async function findByCity() {
+    const city = 'London';
+    const docs = await Person.find({city: city});
+    console.log(`city ${city}:`);
+    docs.forEach(doc => {
+        console.log(doc.age, doc.name, doc.salary, doc.city);
+});
+    
 }
 
 }
